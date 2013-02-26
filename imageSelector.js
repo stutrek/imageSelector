@@ -31,22 +31,28 @@ MIT Licensed
 		return url.substr(0, indexOfDot)+'@2x'+url.substr(indexOfDot);
 	}
 
-	exports.selectImage = function( cuts, desiredWidth, aspectRatio ) {
-		var cutToUse, bestSizeDifference = Infinity;
+	exports.selectCut = function( cuts, desiredWidth, aspectRatio ) {
+		var cutToUse, bestRatioDiff = Infinity;
 		for (var i = 0; i < cuts.length; i++) {
 			var cut = cuts[i];
 			if (!aspectRatio || cut.aspectRatio === aspectRatio) {
-				var currentSizeDifference = Math.abs(cut.width-desiredWidth);
-				if (currentSizeDifference < bestSizeDifference) {
-					cutToUse = cut;
-					bestSizeDifference = currentSizeDifference;
-					if (currentSizeDifference === 0) {
-						return cut;
+				
+				if (desiredWidth === cut.width) {
+					return cut;
+				}
+
+				var sizeRatio = cut.width / desiredWidth;
+				console.log(sizeRatio);
+				if (sizeRatio >= 0.5 && sizeRatio <= 2) {
+					var ratioDiff = Math.abs(sizeRatio - 1);
+					if (ratioDiff < bestRatioDiff) {
+						cutToUse = cut;
+						bestRatioDiff = ratioDiff;
 					}
 				}
 			}
 		}
-		return cut;
+		return cutToUse;
 	};
 
 	exports.addSource = function( element, srcAttribute ) {
@@ -56,11 +62,10 @@ MIT Licensed
 		var width = element.offsetWidth;
 		var aspectRatio = element.getAttribute('data-aspect-ratio');
 
-		var cut = exports.selectImage( cuts, width, aspectRatio );
+		var cut = exports.selectCut( cuts, width, aspectRatio );
 
 		if (cut) {
 			var src = cut.src;
-
 			if (isRetina && cut.at2x && cut.width < width*1.5) {
 				src = addAt2x(src);
 			}
@@ -79,4 +84,6 @@ MIT Licensed
 			exports.addSource( element, srcAttribute );
 		});
 	};
+
+	return exports;
 });

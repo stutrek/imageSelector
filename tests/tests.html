@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+
+		Unit Tests for ImageSelector
+
+</title>
+<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css" type="text/css" media="screen" />
+<script src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="../imageSelector.js"></script>
+</head>
+<body>
+<h1 id="qunit-header">Image Selector</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests">
+</ol>
+<script type="text/javascript">
+	var basicCuts = [
+		{
+			height: 56,
+			width: 100,
+			aspectRatio: '16:9'
+		},
+		{
+			height: 112,
+			width: 200,
+			aspectRatio: '16:9'
+		}
+	];
+
+	var cutsWithAspectRatio = [
+		{
+			height: 56,
+			width: 100,
+			aspectRatio: '16:9'
+		},
+		{
+			height: 56,
+			width: 100,
+			aspectRatio: '4:3'
+		},
+		{
+			height: 50,
+			width: 100,
+			aspectRatio: '2:1'
+		}
+	];
+
+		
+	module('Selection');
+	test('No aspect ratio', function() {
+		var cut = imageSelector.selectCut( basicCuts, 100 );
+		equal( cut.width, 100, "selects a cut that's right on" );
+
+		var cut = imageSelector.selectCut( basicCuts, 120 );
+		equal( cut.width, 100, "selects a cut that's closest" );
+
+		var cut = imageSelector.selectCut( basicCuts, 150 );
+		equal( cut.width, 200, "errs on the side of too large" );
+
+		var cut = imageSelector.selectCut( basicCuts, 49 );
+		equal( cut, undefined, "undefined if cuts are too large" );
+
+		var cut = imageSelector.selectCut( basicCuts, 401 );
+		equal( cut, undefined, "undefined if cuts are too small" );
+	})
+
+	test('With aspect ratio', function() {
+		var cut = imageSelector.selectCut( cutsWithAspectRatio, 100, '16:9' );
+		equal( cut.aspectRatio, '16:9', "selects the first one" );
+		
+		var cut = imageSelector.selectCut( cutsWithAspectRatio, 100, '4:3' );
+		equal( cut.aspectRatio, '4:3', "selects one from the middle" );
+		
+		var cut = imageSelector.selectCut( cutsWithAspectRatio, 100, '2:1' );
+		equal( cut.aspectRatio, '2:1', "selects the last one" );
+	})
+
+
+
+</script>
+</body>
+</html>
