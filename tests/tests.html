@@ -19,17 +19,91 @@
 <h2 id="qunit-userAgent"></h2>
 <ol id="qunit-tests">
 </ol>
+<div id="dom-tests">
+	<img data-cuts='[
+		{
+			"height": 56,
+			"width": 100,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/100x56"
+		},
+		{
+			"height": 112,
+			"width": 200,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/200x112"
+		}
+	]' width="100" id="sized-with-html" />	
+
+	<img data-cuts='[
+		{
+			"height": 56,
+			"width": 100,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/100x56"
+		},
+		{
+			"height": 112,
+			"width": 200,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/200x112"
+		}
+	]' style="width: 100px" id="sized-with-css" />
+
+	<img data-cuts='[
+		{
+			"height": 56,
+			"width": 100,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/100x56"
+		},
+		{
+			"height": 112,
+			"width": 200,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/200x112"
+		}
+	]' style="width: 100px; margin: 50px;" id="lots-of-margin" />
+
+
+	<img data-cuts='[
+		{
+			"height": 56,
+			"width": 100,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/100x56"
+
+		},
+		{
+			"height": 75,
+			"width": 100,
+			"aspectRatio": "4:3",
+			"src": "http://placehold.it/100x75"
+
+		},
+		{
+			"height": 50,
+			"width": 100,
+			"aspectRatio": "2:1",
+			"src": "http://placehold.it/100x50"
+
+		}
+	]' data-aspect-ratio="4:3" width="100" id="uses-aspect-ratio" />	
+
+</div>
 <script type="text/javascript">
 	var basicCuts = [
 		{
 			height: 56,
 			width: 100,
-			aspectRatio: '16:9'
+			aspectRatio: '16:9',
+			src: 'http://placehold.it/100x56'
 		},
 		{
 			height: 112,
 			width: 200,
-			aspectRatio: '16:9'
+			aspectRatio: '16:9',
+			src: 'http://placehold.it/200x112'
 		}
 	];
 
@@ -37,17 +111,23 @@
 		{
 			height: 56,
 			width: 100,
-			aspectRatio: '16:9'
+			aspectRatio: '16:9',
+			src: 'http://placehold.it/100x56'
+
 		},
 		{
-			height: 56,
+			height: 75,
 			width: 100,
-			aspectRatio: '4:3'
+			aspectRatio: '4:3',
+			src: 'http://placehold.it/100x75'
+
 		},
 		{
 			height: 50,
 			width: 100,
-			aspectRatio: '2:1'
+			aspectRatio: '2:1',
+			src: 'http://placehold.it/100x50'
+
 		}
 	];
 
@@ -81,7 +161,14 @@
 		equal( cut.aspectRatio, '2:1', "selects the last one" );
 	})
 
-
+	test('DOM stuff', function() {
+		imageSelector.selectImages(document.getElementById('dom-tests'));
+		var byId = function( id ) { return document.getElementById(id)};
+		equal( byId('sized-with-html').src, "http://placehold.it/100x56", 'sized with html' );
+		equal( byId('sized-with-css').src, "http://placehold.it/100x56", 'sized with css' );
+		equal( byId('lots-of-margin').src, "http://placehold.it/100x56", 'lots of margin' );
+		equal( byId('uses-aspect-ratio').src, "http://placehold.it/100x75", 'uses aspect ratio' );
+	})
 
 </script>
 </body>

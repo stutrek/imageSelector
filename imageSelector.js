@@ -11,8 +11,7 @@ MIT Licensed
 
 	//NODE
 	} else if(typeof module === 'object' && module.exports) {
-		var jQuery = require('jquery');
-		module.exports = factory(jQuery);
+		module.exports = factory(require('jquery'));
 
 	//GLOBAL
 	} else {
@@ -59,7 +58,7 @@ MIT Licensed
 		srcAttribute = srcAttribute || 'src';
 		
 		var cuts = JSON.parse(element.getAttribute('data-cuts'));
-		var width = element.offsetWidth;
+		var width = element.clientWidth;
 		var aspectRatio = element.getAttribute('data-aspect-ratio');
 
 		var cut = exports.selectCut( cuts, width, aspectRatio );
