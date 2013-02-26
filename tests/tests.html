@@ -90,6 +90,21 @@
 		}
 	]' data-aspect-ratio="4:3" width="100" id="uses-aspect-ratio" />	
 
+	<img data-cuts='[
+		{
+			"height": 56,
+			"width": 100,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/100x56"
+		},
+		{
+			"height": 112,
+			"width": 200,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/200x112"
+		}
+	]' width="100" data-src-attribute="data-src" id="data-src-attribute" />	
+
 </div>
 <script type="text/javascript">
 	var basicCuts = [
@@ -168,6 +183,7 @@
 		equal( byId('sized-with-css').src, "http://placehold.it/100x56", 'sized with css' );
 		equal( byId('lots-of-margin').src, "http://placehold.it/100x56", 'lots of margin' );
 		equal( byId('uses-aspect-ratio').src, "http://placehold.it/100x75", 'uses aspect ratio' );
+		equal( byId('data-src-attribute').getAttribute('data-src'), "http://placehold.it/100x56", 'uses data-src-attribute' );
 	})
 
 </script>
