@@ -41,7 +41,6 @@ MIT Licensed
 				}
 
 				var sizeRatio = cut.width / desiredWidth;
-				console.log(sizeRatio);
 				if (sizeRatio >= 0.5 && sizeRatio <= 2) {
 					var ratioDiff = Math.abs(sizeRatio - 1);
 					if (ratioDiff < bestRatioDiff) {
