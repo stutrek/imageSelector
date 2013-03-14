@@ -54,13 +54,14 @@ MIT Licensed
 		return cutToUse;
 	};
 
-	exports.addSource = function( element ) {
+	exports.addSource = function( element, srcAttribute ) {
 		srcAttribute = srcAttribute || 'src';
 		
 		var cuts = JSON.parse(element.getAttribute('data-cuts'));
 		var width = element.clientWidth;
 		var aspectRatio = element.getAttribute('data-aspect-ratio');
-		var srcAttribute = element.getAttribute('data-src-attribute') || 'src';
+
+		srcAttribute = element.getAttribute('data-src-attribute') || srcAttribute;
 
 		var cut = exports.selectCut( cuts, width, aspectRatio );
 
