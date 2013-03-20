@@ -58,6 +58,21 @@
 			"src": "http://placehold.it/100x56"
 		},
 		{
+			"height": 75,
+			"width": 100,
+			"aspectRatio": "4:3",
+			"src": "http://placehold.it/100x75"
+		}
+	]' style="width: 100px; height: 75px" id="height-and-width-with-css" />
+
+	<img data-cuts='[
+		{
+			"height": 56,
+			"width": 100,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/100x56"
+		},
+		{
 			"height": 112,
 			"width": 200,
 			"aspectRatio": "16:9",
@@ -166,14 +181,25 @@
 	})
 
 	test('With aspect ratio', function() {
-		var cut = imageSelector.selectCut( cutsWithAspectRatio, 100, '16:9' );
+		var cut = imageSelector.selectCutWithAspectRatio( cutsWithAspectRatio, 100, '16:9' );
 		equal( cut.aspectRatio, '16:9', "selects the first one" );
 		
-		var cut = imageSelector.selectCut( cutsWithAspectRatio, 100, '4:3' );
+		var cut = imageSelector.selectCutWithAspectRatio( cutsWithAspectRatio, 100, '4:3' );
 		equal( cut.aspectRatio, '4:3', "selects one from the middle" );
 		
-		var cut = imageSelector.selectCut( cutsWithAspectRatio, 100, '2:1' );
+		var cut = imageSelector.selectCutWithAspectRatio( cutsWithAspectRatio, 100, '2:1' );
 		equal( cut.aspectRatio, '2:1', "selects the last one" );
+	})
+
+	test('With height', function() {
+		var cut = imageSelector.selectCutWithWidthAndHeight( cutsWithAspectRatio, 100, 56 );
+		equal( cut.aspectRatio, '16:9', "size is right on" );
+		
+		var cut = imageSelector.selectCutWithWidthAndHeight( cutsWithAspectRatio, 125, 94 );
+		equal( cut.aspectRatio, '4:3', "A little off" );
+		
+		var cut = imageSelector.selectCutWithWidthAndHeight( cutsWithAspectRatio, 100, 30 );
+		equal( cut, undefined, "too far off" );
 	})
 
 	test('DOM stuff', function() {
@@ -181,10 +207,12 @@
 		var byId = function( id ) { return document.getElementById(id)};
 		equal( byId('sized-with-html').src, "http://placehold.it/100x56", 'sized with html' );
 		equal( byId('sized-with-css').src, "http://placehold.it/100x56", 'sized with css' );
+		equal( byId('height-and-width-with-css').src, "http://placehold.it/100x75", 'height and width with css' );
 		equal( byId('lots-of-margin').src, "http://placehold.it/100x56", 'lots of margin' );
 		equal( byId('uses-aspect-ratio').src, "http://placehold.it/100x75", 'uses aspect ratio' );
 		equal( byId('data-src-attribute').getAttribute('data-src'), "http://placehold.it/100x56", 'uses data-src-attribute' );
 	})
+
 
 </script>
 </body>

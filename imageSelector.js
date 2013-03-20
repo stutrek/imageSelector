@@ -30,23 +30,74 @@ MIT Licensed
 		return url.substr(0, indexOfDot)+'@2x'+url.substr(indexOfDot);
 	}
 
-	exports.selectCut = function( cuts, desiredWidth, aspectRatio ) {
-		var cutToUse, bestRatioDiff = Infinity;
+	function rateImage( imageWidth, desiredWidth ) {
+		var ratio = imageWidth / desiredWidth;
+		if (ratio < 1) {
+			ratio = ratio / 2;
+		}
+		return Math.abs( 1 - ratio );
+	}
+
+	var aspectRatioCache = {};
+	function createFilterOnAspectRatio( aspectRatio ) {
+
+		if (!aspectRatioCache[aspectRatio]) {
+			aspectRatioCache[aspectRatio] = function( cut ) {
+				return cut.aspectRatio === aspectRatio;
+			}
+		}
+		
+		return aspectRatioCache[aspectRatio];
+	}
+
+	var heightWidthCache = {};
+	function createFilterOnWidthAndHeight( width, height ) {
+		var desiredAspectRatio = width / height;
+		var ratioString = desiredAspectRatio.toString();
+
+		if (!heightWidthCache[ratioString]) {
+			heightWidthCache[ratioString] = function( cut ) {
+				// if the cut is exactly the right ratio
+				if (cut.width / cut.height === desiredAspectRatio) {
+					return true;
+				}
+				// if adding one to the width is larger and subtracting one is smaller than the desired ratio
+				if ( ((cut.width+1) / cut.height) >= desiredAspectRatio && ((cut.width-1) / cut.height) <= desiredAspectRatio) {
+					return true;
+				}
+				return false;
+			}
+		}
+		return heightWidthCache[ratioString];
+	}
+
+	exports.selectCutWithAspectRatio = function( cuts, desiredWidth, aspectRatio, worstAccepableScore ) {
+		cuts = cuts.filter( createFilterOnAspectRatio( aspectRatio ) );
+		return exports.selectCut( cuts, desiredWidth, worstAccepableScore);
+	};
+
+	exports.selectCutWithWidthAndHeight = function( cuts, desiredWidth, desiredHeight, worstAccepableScore ) {
+		cuts = cuts.filter( createFilterOnWidthAndHeight( desiredWidth, desiredHeight) );
+		return exports.selectCut( cuts, desiredWidth, worstAccepableScore);
+	};
+
+	exports.selectCut = function( cuts, desiredWidth, worstAccepableScore ) {
+		if (worstAccepableScore === undefined) {
+			worstAccepableScore = 0.75;
+		}
+
+		var cutToUse, bestScore = Infinity;
 		for (var i = 0; i < cuts.length; i++) {
 			var cut = cuts[i];
-			if (!aspectRatio || cut.aspectRatio === aspectRatio) {
-				
-				if (desiredWidth === cut.width) {
-					return cut;
-				}
 
-				var sizeRatio = cut.width / desiredWidth;
-				if (sizeRatio >= 0.5 && sizeRatio <= 2) {
-					var ratioDiff = Math.abs(sizeRatio - 1);
-					if (ratioDiff < bestRatioDiff) {
-						cutToUse = cut;
-						bestRatioDiff = ratioDiff;
-					}
+			if (desiredWidth === cut.width) {
+				return cut;
+			}
+			var score = rateImage( cut.width, desiredWidth );
+			if (score < worstAccepableScore) {
+				if (score < bestScore) {
+					cutToUse = cut;
+					bestScore = score;
 				}
 			}
 		}
@@ -58,11 +109,24 @@ MIT Licensed
 		
 		var cuts = JSON.parse(element.getAttribute('data-cuts'));
 		var width = element.clientWidth;
+		var height = element.clientHeight;
 		var aspectRatio = element.getAttribute('data-aspect-ratio');
 
 		srcAttribute = element.getAttribute('data-src-attribute') || srcAttribute;
 
-		var cut = exports.selectCut( cuts, width, aspectRatio );
+		// make sure it's not a missing image icon
+		if (height < 30) {
+			height = false;
+		}
+
+		var cut;
+		if (aspectRatio) {
+			 cut = exports.selectCutWithAspectRatio( cuts, width, aspectRatio );
+		} else if (height) {
+			 cut = exports.selectCutWithWidthAndHeight( cuts, width, height );
+		} else {
+			 cut = exports.selectCut( cuts, width, height );
+		}
 
 		if (cut) {
 			var src = cut.src;
