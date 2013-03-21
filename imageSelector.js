@@ -25,6 +25,14 @@ MIT Licensed
 
 	var isRetina = ( window.devicePixelRatio && window.devicePixelRatio > 1.5 );
 
+	function getStyle( el, styleProp ) {
+		if (el.currentStyle) {
+			var y = el.currentStyle[styleProp];
+		} else if (window.getComputedStyle) {
+			var y = document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp);
+		}
+		return y;
+	}
 	function addAt2x( url ) {
 		var indexOfDot = url.lastIndexOf('.');
 		return url.substr(0, indexOfDot)+'@2x'+url.substr(indexOfDot);
@@ -109,8 +117,16 @@ MIT Licensed
 		
 		var cuts = JSON.parse(element.getAttribute('data-cuts'));
 		var width = element.clientWidth;
-		var height = element.clientHeight;
+		var height;
 		var aspectRatio = element.getAttribute('data-aspect-ratio');
+
+		if (element.attributes.height && element.attributes.height.specified) {
+			height = element.height;
+		} else {
+			height = getStyle( element, 'height' );
+		}
+
+		height = parseInt(height, 10);
 
 		srcAttribute = element.getAttribute('data-src-attribute') || srcAttribute;
 
