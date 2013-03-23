@@ -141,7 +141,7 @@ MIT Licensed
 		} else if (height) {
 			 cut = exports.selectCutWithWidthAndHeight( cuts, width, height );
 		} else {
-			 cut = exports.selectCut( cuts, width, height );
+			 cut = exports.selectCut( cuts, width );
 		}
 
 		if (cut) {
