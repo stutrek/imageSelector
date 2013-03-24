@@ -25,6 +25,19 @@ MIT Licensed
 
 	var isRetina = ( window.devicePixelRatio && window.devicePixelRatio > 1.5 );
 
+	var responsiveCallbacks = [];
+
+	function addResponsiveCallback( callback ) {
+		if (responsiveCallbacks.length === 0) {
+			$(window).resize(function() {
+				for (var i=0; i < responsiveCallbacks.length; i++) {
+					responsiveCallbacks[i]();
+				}
+			})
+		}
+		responsiveCallbacks.push(callback);
+	}
+
 	function getStyle( el, styleProp ) {
 		if (el.currentStyle) {
 			var y = el.currentStyle[styleProp];
@@ -112,10 +125,10 @@ MIT Licensed
 		return cutToUse;
 	};
 
-	exports.addSource = function( element, srcAttribute ) {
+	exports.addSource = function( element, srcAttribute, cuts ) {
 		srcAttribute = srcAttribute || 'src';
 		
-		var cuts = JSON.parse(element.getAttribute('data-cuts'));
+		cuts = cuts || JSON.parse(element.getAttribute('data-cuts'));
 		var width = element.clientWidth;
 		var height;
 		var aspectRatio = element.getAttribute('data-aspect-ratio');
@@ -152,16 +165,34 @@ MIT Licensed
 			element.setAttribute( srcAttribute, src );
 
 		} else {
-			element.className += ' no-cut-found';
+			$(element).addClass('no-cut-found');
+			element.setAttribute( srcAttribute, '' );
 		}
 
-		element.removeAttribute('data-cuts');
+
 		
 	};
 
 	exports.selectImages = function( container, srcAttribute ) {
 		$('img[data-cuts]', container).each(function( key, element ) {
-			exports.addSource( element, srcAttribute );
+			
+			var cuts = JSON.parse(element.getAttribute('data-cuts'))
+			element.removeAttribute('data-cuts');
+	
+			exports.addSource( element, srcAttribute, cuts );
+
+			if (element.getAttribute('data-responsive') === 'true') {
+				var currentWidth = element.offsetWidth;
+
+				addResponsiveCallback(function() {
+					if (element.offsetWidth !== currentWidth) {
+						currentWidth = element.offsetWidth;
+						console.log('reselecting');
+						exports.addSource( element, srcAttribute, cuts );
+					}
+				});
+			}
+
 		});
 	};
 
