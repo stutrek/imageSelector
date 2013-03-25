@@ -176,21 +176,25 @@ MIT Licensed
 	exports.selectImages = function( container, srcAttribute ) {
 		$('img[data-cuts]', container).each(function( key, element ) {
 			
-			var cuts = JSON.parse(element.getAttribute('data-cuts'))
-			element.removeAttribute('data-cuts');
-	
-			exports.addSource( element, srcAttribute, cuts );
+			try {
+				var cuts = JSON.parse(element.getAttribute('data-cuts'))
+				element.removeAttribute('data-cuts');
+		
+				exports.addSource( element, srcAttribute, cuts );
 
-			if (element.getAttribute('data-responsive') === 'true') {
-				var currentWidth = element.offsetWidth;
+				if (element.getAttribute('data-responsive') === 'true') {
+					var currentWidth = element.offsetWidth;
 
-				addResponsiveCallback(function() {
-					if (element.offsetWidth !== currentWidth) {
-						currentWidth = element.offsetWidth;
-						console.log('reselecting');
-						exports.addSource( element, srcAttribute, cuts );
-					}
-				});
+					addResponsiveCallback(function() {
+						if (element.offsetWidth !== currentWidth) {
+							currentWidth = element.offsetWidth;
+							console.log('reselecting');
+							exports.addSource( element, srcAttribute, cuts );
+						}
+					});
+				}
+			} catch (e) {
+				console.error(e);
 			}
 
 		});
