@@ -130,6 +130,9 @@ MIT Licensed
 		
 		cuts = cuts || JSON.parse(element.getAttribute('data-cuts'));
 		var width = element.clientWidth;
+		if (width === 0) {
+			width = parseInt( getStyle( element, 'width' ), 10 );
+		}
 		var height;
 		var aspectRatio = element.getAttribute('data-aspect-ratio');
 
