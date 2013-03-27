@@ -46,6 +46,24 @@ MIT Licensed
 		}
 		return y;
 	}
+
+	function getWidth( element ) {
+		var width = element.clientWidth;
+		if (width === 0) {
+			var widthStr = getStyle( element, 'width' );
+			if (widthStr === 'auto') {
+				width = getWidth( element.parentNode );
+			} else if (widthStr.charAt(widthStr.length-1) === '%') {
+				var percent = parseInt( widthStr, 10 );
+				var parentWidth = getWidth( element.parentNode );
+				width = parentWidth * (percent / 100);
+			} else {
+				width = parseInt( widthStr, 10 );
+			}
+		}
+		return width;
+	}
+
 	function addAt2x( url ) {
 		var indexOfDot = url.lastIndexOf('.');
 		return url.substr(0, indexOfDot)+'@2x'+url.substr(indexOfDot);
@@ -129,10 +147,7 @@ MIT Licensed
 		srcAttribute = srcAttribute || 'src';
 		
 		cuts = cuts || JSON.parse(element.getAttribute('data-cuts'));
-		var width = element.clientWidth;
-		if (width === 0) {
-			width = parseInt( getStyle( element, 'width' ), 10 );
-		}
+		var width = getWidth( element );
 		var height;
 		var aspectRatio = element.getAttribute('data-aspect-ratio');
 
