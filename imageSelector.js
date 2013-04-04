@@ -178,7 +178,11 @@ MIT Licensed
 		if (cut) {
 			var src = cut.src;
 			if (isRetina && cut.at2x && cut.width < width*1.5) {
-				src = addAt2x(src);
+				if (typeof cut.at2x === 'string') {
+					src = cut.at2x;
+				} else {
+					src = addAt2x(src);
+				}
 			}
 			element.setAttribute( srcAttribute, src );
 
