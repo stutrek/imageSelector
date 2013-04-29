@@ -210,7 +210,6 @@ MIT Licensed
 					addResponsiveCallback(function() {
 						if (element.offsetWidth !== currentWidth) {
 							currentWidth = element.offsetWidth;
-							console.log('reselecting');
 							exports.addSource( element, srcAttribute, cuts );
 						}
 					});
