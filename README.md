@@ -1,6 +1,6 @@
-# downsize.images
+# imageSelector
 
-Downsize.images is a responzive image selector that takes a list of cuts and chooses the best fit for the available space. It can be used automatically with data- attributes or manually with JavaScript.
+The imageSelector is a responsive image selector that takes a list of cuts and chooses the best fit for the available space. It can be used automatically with data- attributes or manually with JavaScript.
 
 ## Basic Usage
 
@@ -8,7 +8,7 @@ Downsize.images is a responzive image selector that takes a list of cuts and cho
 <img data-cuts='[ { width:100, src="/path/to/small" }, { width:200, src:"/path/to/large" } ]' style="width: 100px" />
 
 <scrpt>
-	downsizeImages.selectImages(document.body);
+	imageSelector.selectImages(document.body);
 </scrpt>
 ```
 
@@ -32,7 +32,7 @@ The image selector uses a JSON array of possible image cuts and picks the correc
 
 ```
 
-Downsize.images looks for this array in the `data-cuts` attribute of an image.
+The imageSelector looks for this array in the `data-cuts` attribute of an image.
 
 ```html
 <img data-cuts="[...the above array...]" data-aspect-ratio="16:9" data-src-attribute="data-src" />
