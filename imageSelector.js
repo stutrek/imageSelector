@@ -126,7 +126,7 @@ MIT Licensed
 		}
 
 		var cutToUse, bestScore = Infinity;
-		for (var i = 0; i < cuts.length; i++) {
+		for (var i in cuts) {
 			var cut = cuts[i];
 
 			if (desiredWidth === cut.width) {

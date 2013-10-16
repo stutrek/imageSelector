@@ -37,6 +37,21 @@
 		}
 	]' width="100" id="sized-with-html" />	
 
+	<img data-cuts='{
+		"56x100": {
+			"height": 56,
+			"width": 100,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/100x56"
+		},
+		"112x200": {
+			"height": 112,
+			"width": 200,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/200x112"
+		}
+	}' width="100" id="object-not-array" />	
+
 	<img data-cuts='[
 		{
 			"height": 56,
@@ -170,6 +185,21 @@
 		}
 	];
 
+	var objectCuts = {
+		"arbitraryKey1": {
+			height: 56,
+			width: 100,
+			aspectRatio: '16:9',
+			src: 'http://placehold.it/100x56'
+		},
+		"arbitraryKey2": {
+			height: 112,
+			width: 200,
+			aspectRatio: '16:9',
+			src: 'http://placehold.it/200x112'
+		}
+	};
+
 	var cutsWithAspectRatio = [
 		{
 			height: 56,
@@ -211,6 +241,9 @@
 
 		var cut = imageSelector.selectCut( basicCuts, 401 );
 		equal( cut, undefined, "undefined if cuts are too small" );
+
+		var cut = imageSelector.selectCut( basicCuts, 100 );
+		equal( cut.width, 100, "Object instead of an array" );
 	})
 
 	test('With aspect ratio', function() {
@@ -239,6 +272,7 @@
 		imageSelector.selectImages(document.getElementById('dom-tests'));
 		var byId = function( id ) { return document.getElementById(id)};
 		equal( byId('sized-with-html').src, "http://placehold.it/100x56", 'sized with html' );
+		equal( byId('object-not-array').src, "http://placehold.it/100x56", 'object not array' );
 		equal( byId('sized-with-css').src, "http://placehold.it/100x56", 'sized with css' );
 		equal( byId('height-and-width-with-css').src, "http://placehold.it/100x75", 'height and width with css' );
 		equal( byId('lots-of-margin').src, "http://placehold.it/100x56", 'lots of margin' );
