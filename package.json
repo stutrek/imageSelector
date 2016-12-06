@@ -1,0 +1,26 @@
+{
+  "name": "image-selector",
+  "version": "1.0.1",
+  "description": "A responsive image selector",
+  "main": "imageSelector.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://stutrek@github.com/stutrek/imageSelector.git"
+  },
+  "keywords": [
+    "responsive",
+    "images"
+  ],
+  "author": "Stu Kabakoff <sakabako@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stutrek/imageSelector/issues"
+  },
+  "homepage": "https://github.com/stutrek/imageSelector#readme"
+}
