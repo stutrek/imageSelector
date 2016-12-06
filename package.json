@@ -1,6 +1,6 @@
 {
   "name": "image-selector",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A responsive image selector",
   "main": "imageSelector.js",
   "directories": {
