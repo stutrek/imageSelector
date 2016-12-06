@@ -1,6 +1,6 @@
 {
   "name": "imageSelector",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "imageSelector.js",
   "ignore": [
     "**/.*",
@@ -10,6 +10,6 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": ">= 1.2.6"
+    "add-event-listener": "chrisdickinson/add-event-listener#0.0.1"
   }
 }

@@ -22,5 +22,11 @@
   "bugs": {
     "url": "https://github.com/stutrek/imageSelector/issues"
   },
-  "homepage": "https://github.com/stutrek/imageSelector#readme"
+  "homepage": "https://github.com/stutrek/imageSelector#readme",
+  "dependencies": {
+    "add-event-listener": "0.0.1"
+  },
+  "devDependencies": {
+    "webpack": "^1.13.3"
+  }
 }
