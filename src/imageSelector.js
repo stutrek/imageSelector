@@ -10,7 +10,7 @@ var isRetina = ( window.devicePixelRatio && window.devicePixelRatio > 1.5 );
 
 var responsiveCallbacks = [];
 
-function addResponsiveCallback( callback ) {
+function addResponsiveCallback (callback) {
 	if (responsiveCallbacks.length === 0) {
 		events.addEventListner(window, 'resize', function() {
 			for (var i=0; i < responsiveCallbacks.length; i++) {
@@ -21,7 +21,7 @@ function addResponsiveCallback( callback ) {
 	responsiveCallbacks.push(callback);
 }
 
-function getStyle( el, styleProp ) {
+function getStyle (el, styleProp) {
 	var y;
 	if (el.currentStyle) {
 		y = el.currentStyle[styleProp];
@@ -31,7 +31,7 @@ function getStyle( el, styleProp ) {
 	return y;
 }
 
-function getWidth( element ) {
+function getWidth (element) {
 	var width = element.clientWidth;
 	if (width === 0) {
 		var widthStr = getStyle( element, 'width' );
@@ -48,12 +48,12 @@ function getWidth( element ) {
 	return width;
 }
 
-function addAt2x( url ) {
+function addAt2x (url) {
 	var indexOfDot = url.lastIndexOf('.');
 	return url.substr(0, indexOfDot)+'@2x'+url.substr(indexOfDot);
 }
 
-function rateImage( imageWidth, desiredWidth ) {
+function rateImage (imageWidth, desiredWidth) {
 	var ratio = imageWidth / desiredWidth;
 	if (ratio < 1) {
 		ratio = ratio / 2;
@@ -62,7 +62,7 @@ function rateImage( imageWidth, desiredWidth ) {
 }
 
 var aspectRatioCache = {};
-function createFilterOnAspectRatio( aspectRatio ) {
+function createFilterOnAspectRatio (aspectRatio) {
 
 	if (!aspectRatioCache[aspectRatio]) {
 		aspectRatioCache[aspectRatio] = function( cut ) {
@@ -74,7 +74,7 @@ function createFilterOnAspectRatio( aspectRatio ) {
 }
 
 var heightWidthCache = {};
-function createFilterOnWidthAndHeight( width, height ) {
+function createFilterOnWidthAndHeight (width, height) {
 	var desiredAspectRatio = width / height;
 	var ratioString = desiredAspectRatio.toString();
 
@@ -94,17 +94,17 @@ function createFilterOnWidthAndHeight( width, height ) {
 	return heightWidthCache[ratioString];
 }
 
-exports.selectCutWithAspectRatio = function( cuts, desiredWidth, aspectRatio, worstAccepableScore ) {
+exports.selectCutWithAspectRatio = function (cuts, desiredWidth, aspectRatio, worstAccepableScore) {
 	cuts = cuts.filter( createFilterOnAspectRatio( aspectRatio ) );
 	return exports.selectCut( cuts, desiredWidth, worstAccepableScore);
 };
 
-exports.selectCutWithWidthAndHeight = function( cuts, desiredWidth, desiredHeight, worstAccepableScore ) {
+exports.selectCutWithWidthAndHeight = function (cuts, desiredWidth, desiredHeight, worstAccepableScore) {
 	cuts = cuts.filter( createFilterOnWidthAndHeight( desiredWidth, desiredHeight) );
 	return exports.selectCut( cuts, desiredWidth, worstAccepableScore);
 };
 
-exports.selectCut = function( cuts, desiredWidth, worstAccepableScore ) {
+exports.selectCut = function (cuts, desiredWidth, worstAccepableScore) {
 	if (worstAccepableScore === undefined) {
 		worstAccepableScore = 0.75;
 	}
@@ -127,7 +127,7 @@ exports.selectCut = function( cuts, desiredWidth, worstAccepableScore ) {
 	return cutToUse;
 };
 
-exports.addSource = function( element, srcAttribute, cuts ) {
+exports.addSource = function (element, srcAttribute, cuts) {
 	srcAttribute = srcAttribute || 'src';
 
 	cuts = cuts || JSON.parse(element.getAttribute('data-cuts'));
@@ -176,7 +176,18 @@ exports.addSource = function( element, srcAttribute, cuts ) {
 	}
 };
 
-exports.selectImages = function( container, srcAttribute ) {
+exports.watchImage = function (img, cuts, srcAttribute) {
+	var currentWidth = img.offsetWidth;
+	exports.addSource(img, srcAttribute, cuts);
+	addResponsiveCallback(function() {
+		if (img.offsetWidth !== currentWidth) {
+			currentWidth = img.offsetWidth;
+			exports.addSource(img, srcAttribute, cuts);
+		}
+	});
+};
+
+exports.selectImages = function (container, srcAttribute) {
 	container = container || document.body;
 	var elements = container.querySelectorAll('img[data-cuts]');
 	var element;
@@ -187,21 +198,13 @@ exports.selectImages = function( container, srcAttribute ) {
 			var cuts = JSON.parse(element.getAttribute('data-cuts'));
 			element.removeAttribute('data-cuts');
 
-			exports.addSource( element, srcAttribute, cuts );
-
 			if (element.getAttribute('data-responsive') === 'true') {
-				var currentWidth = element.offsetWidth;
-
-				addResponsiveCallback(function() {
-					if (element.offsetWidth !== currentWidth) {
-						currentWidth = element.offsetWidth;
-						exports.addSource( element, srcAttribute, cuts );
-					}
-				});
+				exports.watchImage(element, cuts, srcAttribute);
+			} else {
+				exports.addSource(element, srcAttribute, cuts);
 			}
 		} catch (e) {
 			console && console.error && console.error(e);
 		}
-
 	}
 };

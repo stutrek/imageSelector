@@ -168,6 +168,20 @@
 			}
 		]' style="width: 100%" id="sized-by-grandparent" />
 	</span></div>
+	<img data-cuts='[
+		{
+			"height": 56,
+			"width": 100,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/100x56"
+		},
+		{
+			"height": 112,
+			"width": 200,
+			"aspectRatio": "16:9",
+			"src": "http://placehold.it/200x112"
+		}
+	]' width="100" id="is-responsive" data-responsive="true" />
 </div>
 <script type="text/javascript">
 	var basicCuts = [
@@ -280,6 +294,7 @@
 		equal( byId('data-src-attribute').getAttribute('data-src'), "http://placehold.it/100x56", 'uses data-src-attribute' );
 		equal( byId('sized-by-parent').src, "http://placehold.it/100x56", 'sized by parent' );
 		equal( byId('sized-by-grandparent').src, "http://placehold.it/100x56", 'sized by grandparent' );
+		equal( byId('is-responsive').src, "http://placehold.it/100x56", 'is responsive' );
 	})
 
 
