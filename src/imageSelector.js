@@ -12,7 +12,7 @@ var responsiveCallbacks = [];
 
 function addResponsiveCallback (callback) {
 	if (responsiveCallbacks.length === 0) {
-		events.addEventListner(window, 'resize', function() {
+		events.addEventListener(window, 'resize', function() {
 			for (var i=0; i < responsiveCallbacks.length; i++) {
 				responsiveCallbacks[i]();
 			}
