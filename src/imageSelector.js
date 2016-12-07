@@ -111,16 +111,18 @@ exports.selectCut = function (cuts, desiredWidth, worstAccepableScore) {
 
 	var cutToUse, bestScore = Infinity;
 	for (var i in cuts) {
-		var cut = cuts[i];
+		if (cuts.hasOwnProperty(i)) {
+			var cut = cuts[i];
 
-		if (desiredWidth === cut.width) {
-			return cut;
-		}
-		var score = rateImage( cut.width, desiredWidth );
-		if (score < worstAccepableScore) {
-			if (score < bestScore) {
-				cutToUse = cut;
-				bestScore = score;
+			if (desiredWidth === cut.width) {
+				return cut;
+			}
+			var score = rateImage( cut.width, desiredWidth );
+			if (score < worstAccepableScore) {
+				if (score < bestScore) {
+					cutToUse = cut;
+					bestScore = score;
+				}
 			}
 		}
 	}
@@ -134,6 +136,14 @@ exports.addSource = function (element, srcAttribute, cuts) {
 	var width = getWidth( element );
 	var height;
 	var aspectRatio = element.getAttribute('data-aspect-ratio');
+
+	var shouldUseHeight = false;
+	for (var i in cuts) {
+		if (cuts.hasOwnProperty(i) && cuts[i].height) {
+			shouldUseHeight = true;
+			break;
+		}
+	}
 
 	if (element.attributes.height && element.attributes.height.specified) {
 		height = element.height;
@@ -153,7 +163,7 @@ exports.addSource = function (element, srcAttribute, cuts) {
 	var cut;
 	if (aspectRatio) {
 		cut = exports.selectCutWithAspectRatio( cuts, width, aspectRatio );
-	} else if (height) {
+	} else if (shouldUseHeight && height) {
 		cut = exports.selectCutWithWidthAndHeight( cuts, width, height );
 	} else {
 		cut = exports.selectCut( cuts, width );
