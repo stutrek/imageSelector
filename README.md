@@ -12,6 +12,10 @@ The imageSelector is a responsive image selector that takes a list of cuts and c
 </scrpt>
 ```
 
+## Slightly More Advanced
+
+If you already have your cuts in an array you can select a source, recalculate, and clean up any watchers.
+
 ## Giving the Image Selector Options
 
 The image selector uses a JSON array or object of possible image cuts and picks the correct one. These must have `width` and `src` attributes, `aspectRatio` is optional.
@@ -61,3 +65,4 @@ On a retina display, if `cut.at2x` is true it will add @2x to the end of the fil
 
 * `data-aspect-ratio` - the image selector will ignore images without this aspect ratio.
 * `data-src-attribute` - the image selector will use this attribute instead of the `src` attribute. Use this for lazy loading.
+* `data-responsive` - adds a resize listener to the body to detect when the image changes sizes.

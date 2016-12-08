@@ -189,12 +189,22 @@ exports.addSource = function (element, srcAttribute, cuts) {
 exports.watchImage = function (img, cuts, srcAttribute) {
 	var currentWidth = img.offsetWidth;
 	exports.addSource(img, srcAttribute, cuts);
-	addResponsiveCallback(function() {
+	var callback = function () {
 		if (img.offsetWidth !== currentWidth) {
 			currentWidth = img.offsetWidth;
 			exports.addSource(img, srcAttribute, cuts);
 		}
-	});
+	};
+	addResponsiveCallback(callback);
+	return {
+		destroy: function () {
+			var index = responsiveCallbacks.indexOf(callback);
+			responsiveCallbacks.splice(index, 1);
+		},
+		recalculate: function () {
+			exports.addSource(img, srcAttribute, cuts);
+		}
+	};
 };
 
 exports.selectImages = function (container, srcAttribute) {
